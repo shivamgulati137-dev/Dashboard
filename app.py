@@ -80,8 +80,8 @@ def initialize_data_files():
                            'Village K', 'Village L', 'Village M', 'Village N', 'Village O'],
             'Municipal_Zone': ['A', 'A', 'B', 'B', 'B', 'C', 'C', 'C', 'D', 'D', 'A', 'B', 'C', 'D', 'A'],
             'Current_Phase': ['Card Issuance', 'Map 3', 'Objections Hearing', 'Pasting', 'Map 2 awaited',
-                            'Ground Truthing', 'Map 1 awaited', 'Drone Survey Pending', 'Notification', 'Drone Survey Pending',
-                            'Map 3', 'Pasting', 'Map 2 awaited', 'Ground Truthing', 'Objections Hearing'],
+                            'Ground Truthing Pending', 'Map 1 awaited', 'Drone Survey Pending', 'Notification', 'Drone Survey Pending',
+                            'Map 3', 'Pasting', 'Map 2 awaited', 'Ground Truthing Pending', 'Objections Hearing'],
             'Status': ['Completed', 'On Track', 'On Track', 'Behind Schedule', 'On Track',
                       'On Track', 'Behind Schedule', 'On Track', 'On Track', 'On Track',
                       'On Track', 'Behind Schedule', 'On Track', 'On Track', 'On Track'],
@@ -133,7 +133,7 @@ def initialize_data_files():
     
     if not os.path.exists(PROGRESS_DATA):
         sample_progress = {
-            'Phase': ['Notification', 'Drone Survey Pending', 'Map 1 awaited', 'Ground Truthing', 'Map 2 awaited',
+            'Phase': ['Notification', 'Drone Survey Pending', 'Map 1 awaited', 'Ground Truthing Pending', 'Map 2 awaited',
                      'Pasting', 'Objections Hearing', 'Map 3', 'Card Issuance'],
             'Completed': [15, 15, 13, 11, 9, 7, 5, 3, 1],
             'Target': [15, 15, 15, 15, 15, 15, 15, 15, 15],
@@ -150,7 +150,7 @@ def initialize_data_files():
     
     if not os.path.exists(RESPONSIBILITY_DATA):
         sample_responsibility = {
-            'Phase': ['Notification', 'Drone Survey Pending', 'Map 1 awaited', 'Ground Truthing', 'Map 2 awaited',
+            'Phase': ['Notification', 'Drone Survey Pending', 'Map 1 awaited', 'Ground Truthing Pending', 'Map 2 awaited',
                      'Pasting', 'Objections Hearing', 'Map 3', 'Card Issuance'],
             'Responsible_Department': ['DC Administration', 'Survey of India', 'Survey of India',
                                       'Property Tax Dept (HDM/JDM)', 'Survey of India', 'ATP/MTP',
@@ -326,7 +326,7 @@ def get_status_color(status):
 
 def get_phase_order():
     """Get ordered list of phases"""
-    return ['Notification', 'Drone Survey Pending', 'Map 1 awaited', 'Ground Truthing', 'Map 2 awaited',
+    return ['Notification', 'Drone Survey Pending', 'Map 1 awaited', 'Ground Truthing Pending', 'Map 2 awaited',
             'Pasting', 'Objections Hearing', 'Map 3', 'Card Issuance']
 
 # Initialize data files
@@ -383,9 +383,9 @@ with tab1:
         col1, col2, col3, col4 = st.columns(4)
         
         total_villages = len(villages_df)
-        survey_completed = len(villages_df[villages_df['Current_Phase'].isin(['Map 1 awaited', 'Ground Truthing', 'Map 2 awaited', 'Pasting', 'Objections Hearing', 'Map 3', 'Card Issuance'])])
+        survey_completed = len(villages_df[villages_df['Current_Phase'].isin(['Map 1 awaited', 'Ground Truthing Pending', 'Map 2 awaited', 'Pasting', 'Objections Hearing', 'Map 3', 'Card Issuance'])])
         map2_awaited = len(villages_df[villages_df['Current_Phase'] == 'Map 2 awaited'])
-        ground_truthing = len(villages_df[villages_df['Current_Phase'] == 'Ground Truthing'])
+        ground_truthing = len(villages_df[villages_df['Current_Phase'] == 'Ground Truthing Pending'])
         
         with col1:
             st.metric("Total Villages", total_villages)
@@ -394,7 +394,7 @@ with tab1:
         with col3:
             st.metric("Map 2 awaited", map2_awaited)
         with col4:
-            st.metric("Ground Truthing", ground_truthing)
+            st.metric("Ground Truthing Pending", ground_truthing)
         
         st.markdown("---")
         
