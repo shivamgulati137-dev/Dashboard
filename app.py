@@ -60,6 +60,64 @@ st.markdown("""
     .reload-section {
         padding: 1rem 0;
     }
+    /* Mobile-friendly table styles */
+    @media screen and (max-width: 768px) {
+        .main-header {
+            font-size: 1.5rem;
+            padding: 0.5rem 0;
+        }
+        /* Make tables scrollable on mobile */
+        div[data-testid="stDataFrame"] {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        /* Optimize table cells for mobile */
+        div[data-testid="stDataFrame"] table {
+            font-size: 0.85rem;
+            width: 100%;
+        }
+        div[data-testid="stDataFrame"] th,
+        div[data-testid="stDataFrame"] td {
+            padding: 0.4rem 0.3rem;
+            white-space: nowrap;
+        }
+        /* Reduce column width on mobile */
+        .stMetric {
+            padding: 0.5rem;
+        }
+    }
+    /* Optimize dataframe rendering */
+    div[data-testid="stDataFrame"] {
+        border-radius: 0.5rem;
+    }
+    /* Improve table performance */
+    div[data-testid="stDataFrame"] table {
+        border-collapse: collapse;
+    }
+    /* Optimize scrolling performance on mobile */
+    @media screen and (max-width: 768px) {
+        div[data-testid="stDataFrame"] {
+            will-change: scroll-position;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+        }
+        /* Reduce font size for better performance */
+        div[data-testid="stDataFrame"] td,
+        div[data-testid="stDataFrame"] th {
+            font-size: 0.8rem;
+        }
+        /* Optimize metric cards for mobile */
+        [data-testid="stMetricValue"] {
+            font-size: 1.2rem;
+        }
+        [data-testid="stMetricLabel"] {
+            font-size: 0.75rem;
+        }
+    }
+    /* Reduce reflow/repaint */
+    div[data-testid="stDataFrame"] {
+        contain: layout style paint;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -400,6 +458,12 @@ with tab1:
         
         # Village Progress Table
         st.markdown("### 🏘️ Village Progress Details")
+        
+        # Mobile-friendly view toggle
+        col_view1, col_view2 = st.columns([1, 4])
+        with col_view1:
+            compact_view = st.checkbox("📱 Compact View", help="Optimized view for mobile devices")
+        
         display_columns = ['Village_Name', 'Municipal_Zone', 'Current_Phase', 'Status',
                           'Last_Updated']
         
@@ -419,10 +483,13 @@ with tab1:
         
         styled_df = display_df.style.map(style_status, subset=['Status'])
         
+        # Optimize for mobile: use container width and adjust height based on view
+        table_height = 300 if compact_view else 400
         st.dataframe(
             styled_df,
-            width='stretch',
-            height=400
+            use_container_width=True,
+            height=table_height,
+            hide_index=False
         )
         
         # Export functionality
@@ -531,10 +598,10 @@ with tab2:
             (responsibility_df['Phase'] != 'Card Issuance')
         ]
         
-        # Display responsibility matrix
+        # Display responsibility matrix - optimized for mobile
         st.dataframe(
             filtered_responsibility_df,
-            width='stretch',
+            use_container_width=True,
             hide_index=True
         )
         
@@ -715,7 +782,7 @@ with tab3:
             available_columns = [col for col in display_columns if col in display_remarks.columns]
             display_remarks = display_remarks[available_columns]
             
-            st.dataframe(display_remarks, width='stretch', height=400)
+            st.dataframe(display_remarks, use_container_width=True, height=400)
             
             # Export functionality
             csv = filtered_remarks.to_csv(index=False).encode('utf-8')
